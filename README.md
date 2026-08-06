@@ -199,6 +199,8 @@ Additionally, `run_fedsala_75_vs_100.sh` runs a separate threshold ablation comp
 
 ## Acknowledgment
 
+This implementation is built upon the [FedALA](https://github.com/TsingZ0/FedALA) codebase (AAAI 2023). We gratefully acknowledge the original authors for making their code publicly available.
+
 The author would like to express gratitude to Professor Joonseon Ahn for his generous guidance and advice throughout this research.
 
 The author used OpenAI ChatGPT, Anthropic Claude Opus 4.6 via Google Antigravity IDE, and Google Gemini 3.1 Pro via Google Antigravity IDE for language, formatting, code, and figure-related assistance. All AI-assisted outputs were reviewed and revised by the author.
