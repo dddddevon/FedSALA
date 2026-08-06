@@ -2,7 +2,7 @@
 
 This is the implementation of *FedSALA: Selective Adaptive Local Aggregation for Personalized Federated Learning*.
 
-FedSALA replaces layer-position-based parameter selection with **Fisher Information-based parameter-wise selection**. FedSALA enable each client to adaptively identify prediction-sensitive parameters across all layers for local-global aggregation.
+FedSALA enable each client to adaptively identify prediction-sensitive parameters across all layers for local-global aggregation.
 
 ## Requirements
 
