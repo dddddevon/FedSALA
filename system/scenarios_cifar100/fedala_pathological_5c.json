@@ -1,0 +1,12 @@
+{
+  "_source": "FedALA (Zhang et al., AAAI 2023) — severe variant",
+  "_description": "Extreme pathological setting from FedALA ablation: 20 clients, each with only 5 classes out of 100. Each class appears in 1 client (20×5/100=1). With 500 samples/label, each client gets 2500 training samples but sees only 5% of classes — maximum label isolation.",
+  "client_groups": [
+    {
+      "count": 20,
+      "labels_per_client": 5,
+      "samples_per_label": 500
+    }
+  ],
+  "seed": 42
+}

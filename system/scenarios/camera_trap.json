@@ -1,0 +1,14 @@
+{
+  "client_groups": [
+    {
+      "count": 15,
+      "labels_per_client": 2,
+      "ratio": [
+        6,
+        1
+      ],
+      "total_per_client": 1260
+    }
+  ],
+  "seed": 42
+}

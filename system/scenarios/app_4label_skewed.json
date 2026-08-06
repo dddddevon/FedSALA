@@ -1,0 +1,6 @@
+{
+  "client_groups": [
+    {"count": 5, "labels_per_client": 4, "ratio": [4, 3, 2, 1], "total_per_client": 800}
+  ],
+  "seed": 42
+}

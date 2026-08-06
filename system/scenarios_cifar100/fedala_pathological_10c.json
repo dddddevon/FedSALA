@@ -1,0 +1,12 @@
+{
+  "_source": "FedALA (Zhang et al., AAAI 2023)",
+  "_description": "FedALA's default pathological setting for CIFAR-100: 20 clients, each with 10 classes out of 100, equal samples per label. Each class appears in 2 clients (20×10/100=2). With 250 samples/label, total demand per class = 2×250 = 500 (exactly uses the full pool).",
+  "client_groups": [
+    {
+      "count": 20,
+      "labels_per_client": 10,
+      "samples_per_label": 250
+    }
+  ],
+  "seed": 42
+}

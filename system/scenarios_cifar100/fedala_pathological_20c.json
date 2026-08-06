@@ -1,0 +1,12 @@
+{
+  "_source": "FedALA (Zhang et al., AAAI 2023) — mild variant",
+  "_description": "Mild pathological setting: 20 clients, each with 20 classes out of 100. Each class appears in 4 clients (20×20/100=4). With 125 samples/label, total demand per class = 4×125 = 500. Clients see 20% of classes — moderate heterogeneity, still non-IID.",
+  "client_groups": [
+    {
+      "count": 20,
+      "labels_per_client": 20,
+      "samples_per_label": 125
+    }
+  ],
+  "seed": 42
+}
