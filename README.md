@@ -2,7 +2,7 @@
 
 This is the implementation of *FedSALA: Selective Adaptive Local Aggregation for Personalized Federated Learning*.
 
-FedSALA replaces layer-position-based parameter selection with **Fisher Information-based parameter-wise selection**, enabling each client to adaptively identify prediction-sensitive parameters across all layers for personalized local-global aggregation.
+FedSALA replaces layer-position-based parameter selection with **Fisher Information-based parameter-wise selection**. FedSALA enable each client to adaptively identify prediction-sensitive parameters across all layers for local-global aggregation.
 
 ## Requirements
 
@@ -16,7 +16,7 @@ CUDA-enabled GPU is recommended for training.
 
 ## Datasets
 
-Data is generated using JSON-based scenario configurations. The `scenarios/` and `scenarios_cifar100/` directories contain predefined non-IID split configurations for CIFAR-10 (10 scenarios) and CIFAR-100 (3 scenarios).
+Data is generated using JSON-based scenario configurations:
 
 ```bash
 cd system
@@ -24,56 +24,66 @@ python3 generate_cifar10.py --config scenarios/comp_2label.json
 python3 generate_cifar100.py --config scenarios_cifar100/fedala_pathological_5c.json
 ```
 
-## System
+## Repository Structure
 
-- `main.py`: configurations and entry point for **FedSALA**.
-- `run_all_fedsala_experiments.sh`: run all 4 experiment groups (92 runs).
-- `run_fedsala_75_vs_100.sh`: threshold ablation study (20 runs).
-- `./flcore`:
-    - `./clients/clientSALA.py`: the code on the client.
-    - `./clients/clientALA.py`: the baseline client (FedALA).
-    - `./servers/serverSALA.py`: the code on the server.
-    - `./servers/serverALA.py`: the baseline server.
-    - `./trainmodel/models.py`: the code for backbones.
-- `./utils`:
-    - `SALA.py`: the code of our **Selective Adaptive Local Aggregation (SALA)** module.
-    - `ALA.py`: the baseline ALA module.
-    - `data_utils.py`: the code to read the dataset.
-- `./scenarios/`: CIFAR-10 non-IID split configurations (10 JSONs).
-- `./scenarios_cifar100/`: CIFAR-100 non-IID split configurations (3 JSONs).
-- `compare_split_results.py`: per-split comparison plot generator.
-- `generate_total_summary.py`: cross-split summary table generator.
+```
+FedSALA_github/
+├── README.md
+├── LICENSE                                 # MIT License
+├── requirements.txt                        # Python dependencies
+├── .gitignore
+│
+├── system/
+│   ├── main.py                             # Entry point — CLI args, training loop
+│   ├── generate_cifar10.py                 # CIFAR-10 non-IID data partitioner
+│   ├── generate_cifar100.py                # CIFAR-100 non-IID data partitioner
+│   │
+│   ├── flcore/
+│   │   ├── clients/
+│   │   │   ├── clientSALA.py               # FedSALA client
+│   │   │   └── clientALA.py                # FedALA client (baseline)
+│   │   ├── servers/
+│   │   │   ├── serverSALA.py               # FedSALA server
+│   │   │   └── serverALA.py                # FedALA/FedAvg server
+│   │   └── trainmodel/
+│   │       └── models.py                   # ResNet-18 architecture
+│   │
+│   ├── utils/
+│   │   ├── SALA.py                         # FedSALA core — Fisher computation & selective ALA
+│   │   ├── ALA.py                          # ALA module (baseline)
+│   │   └── data_utils.py                   # Dataset loading utilities
+│   │
+│   ├── scenarios/                          # CIFAR-10 data split configurations (10 JSONs)
+│   ├── scenarios_cifar100/                 # CIFAR-100 data split configurations (3 JSONs)
+│   │
+│   ├── run_all_fedsala_experiments.sh      # Master experiment runner (92 runs, 4 groups)
+│   ├── run_fedsala_75_vs_100.sh            # Threshold ablation study (20 runs)
+│   ├── compare_split_results.py            # Per-split comparison plots
+│   ├── generate_total_summary.py           # Cross-split summary tables
+│   ├── generate_experiment_results_latex.py # LaTeX table/figure generator
+│   ├── README_experiments.md               # Detailed experiment guide
+│   └── env_linux.yaml                      # Conda environment specification
+│
+└── dataset/                                # Generated data goes here (gitignored)
+```
 
-## SALA Module
+## How to Use
 
-`./system/utils/SALA.py` is the implementation of the SALA module. It performs the following steps each communication round (from round 2 onward):
+All codes corresponding to **FedSALA** are stored in `./system`. 
 
-1. **Fisher Computation**: Estimate diagonal Fisher Information from a sampled subset of local data.
-2. **EMA Smoothing**: Smooth Fisher values across rounds to stabilize the binary mask.
-3. **Mask Generation**: Threshold the top P% parameters by Fisher value → binary mask M.
-4. **Initialization**: High-Fisher parameters (M=1) are initialized with a weighted blend of local and global values. Low-Fisher parameters (M=0) retain their local values.
-5. **Weight Learning**: Learn aggregation weights for M=1 parameters via gradient descent on local data, gated by the mask.
-
-### How to use
+To reproduce all paper results (4 experiment groups, 92 runs total):
 
 ```bash
 cd system
-
-# FedSALA
-python3 main.py -algo FedSALA --fedsala_method 3 \
-    --fisher_threshold 0.7516455 --fisher_ema_alpha 0.5 \
-    --fisher_sample_percent 10 \
-    -m resnet -data Cifar10 -nb 10 -nc 10 \
-    -gr 200 -lr 0.001 -lbs 10 -ls 1 -dev cuda
-
-# FedALA (baseline)
-python3 main.py -algo FedALA -p 17 -s 80 -et 1.0 \
-    -m resnet -data Cifar10 -nb 10 -nc 10 \
-    -gr 200 -lr 0.001 -lbs 10 -ls 1 -dev cuda
-
-# Run all experiments
 chmod +x run_all_fedsala_experiments.sh
 nohup ./run_all_fedsala_experiments.sh > ../results/run.log 2>&1 &
+```
+
+To run the threshold ablation study (75.16% vs 100%, 20 runs):
+
+```bash
+chmod +x run_fedsala_75_vs_100.sh
+nohup ./run_fedsala_75_vs_100.sh > ../results/run_75_vs_100.log 2>&1 &
 ```
 
 ## Acknowledgment
